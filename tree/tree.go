@@ -2,12 +2,6 @@ package main
 
 import "fmt"
 
-//Node 节点
-type Node struct {
-	data         string
-	lNode, rNode *Node
-}
-
 func main() {
 	root := generateTreeSimple()
 
@@ -21,6 +15,12 @@ func main() {
 
 	fmt.Printf("LRD: ")
 	backForeach(root)
+	fmt.Printf("\n")
+
+	fmt.Println("-------------------------------------------")
+
+	fmt.Printf("LDR: ")
+	midForeachWithStack(root)
 	fmt.Printf("\n")
 }
 
@@ -82,4 +82,20 @@ func backForeach(node *Node) {
 	backForeach(node.lNode)
 	backForeach(node.rNode)
 	fmt.Printf("%s ", node.data)
+}
+
+//midForeachWithStack
+func midForeachWithStack(tree *Node) {
+	p := tree
+	stack := generateStack()
+	for p != nil || !emptyStack(stack) {
+		if p != nil {
+			pushStack(stack, p)
+			p = p.lNode
+		} else {
+			q := popStack(stack)
+			fmt.Printf("%s ", q.data)
+			p = q.rNode
+		}
+	}
 }
