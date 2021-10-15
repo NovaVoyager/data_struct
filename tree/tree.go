@@ -22,6 +22,12 @@ func main() {
 	fmt.Printf("LDR: ")
 	midForeachWithStack(root)
 	fmt.Printf("\n")
+
+	fmt.Println("-------------------------------------------")
+	fmt.Printf("level for:")
+	levelForeach(root)
+	fmt.Printf("\n")
+
 }
 
 //generateTreeSimple 生成树，简单版
@@ -97,5 +103,17 @@ func midForeachWithStack(tree *Node) {
 			fmt.Printf("%s ", q.data)
 			p = q.rNode
 		}
+	}
+}
+
+//levelForeach 层级遍历
+func levelForeach(tree *Node) {
+	queue := newQueue()
+	pushQueue(queue, tree)
+	for !emptyQueue(queue) {
+		node := popQueue(queue)
+		fmt.Printf("%s ", node.data)
+		pushQueue(queue, node.lNode)
+		pushQueue(queue, node.rNode)
 	}
 }
