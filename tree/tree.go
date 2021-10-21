@@ -1,9 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
-	root := generateTreeSimple()
+	fmt.Println("please input tree:")
+	str := readIn()
+	i := 0
+	root := createTree(str, &i)
 
 	fmt.Printf("DLR: ")
 	preForeach(root)
@@ -28,6 +33,82 @@ func main() {
 	levelForeach(root)
 	fmt.Printf("\n")
 
+	fmt.Printf("copy tree LDR:")
+	copyT := copyTree(root)
+	midForeachWithStack(copyT)
+	fmt.Printf("\n")
+
+	fmt.Printf("node num:")
+	nodenum := nodeNum(root)
+	fmt.Printf("%d\n", nodenum)
+
+	fmt.Printf("leaf node num:")
+	leafNodenum := leafNodeNum(root)
+	fmt.Printf("%d\n", leafNodenum)
+
+	fmt.Printf("tree depth:")
+	depth := treeDepth(root)
+	fmt.Printf("%d\n", depth)
+}
+
+//treeDepth 获取数深度
+func treeDepth(node *Node) int {
+	if node == nil {
+		return 0
+	}
+	m := treeDepth(node.lNode)
+	n := treeDepth(node.rNode)
+	if m > n {
+		return m + 1
+	}
+	return n + 1
+}
+
+//leafNodeNum 获取叶子节点数量
+func leafNodeNum(node *Node) int {
+	if node == nil {
+		return 0
+	}
+	if node.lNode == nil && node.rNode == nil {
+		return 1
+	}
+	return leafNodeNum(node.lNode) + leafNodeNum(node.rNode)
+}
+
+//nodeNum 获取节点数量
+func nodeNum(node *Node) int {
+	if node == nil {
+		return 0
+	}
+	return nodeNum(node.lNode) + nodeNum(node.rNode) + 1
+}
+
+//copyTree 复制二叉树
+func copyTree(node *Node) *Node {
+	newNode := new(Node)
+	if node == nil {
+		return nil
+	} else {
+		newNode.data = node.data
+		newNode.lNode = copyTree(node.lNode)
+		newNode.rNode = copyTree(node.rNode)
+	}
+	return newNode
+}
+
+//createTree 创建二叉树
+func createTree(str string, i *int) *Node {
+	newNode := new(Node)
+	s := string(str[*i])
+	*i++
+	if s == "#" {
+		return nil
+	} else {
+		newNode.data = s
+		newNode.lNode = createTree(str, i)
+		newNode.rNode = createTree(str, i)
+	}
+	return newNode
 }
 
 //generateTreeSimple 生成树，简单版
