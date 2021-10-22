@@ -25,51 +25,45 @@ func (this *MyLinkedList) Get(index int) int {
 	node := this.Head
 	for i := 0; node != nil; i++ {
 		if i == index {
-			return node.Val
+			break
 		}
 		node = node.Next
 	}
-	return -1
+	return node.Val
 }
 
 //AddAtHead 头插
 func (this *MyLinkedList) AddAtHead(val int) {
-	//第一个节点
-	if this.Size == 0 {
-		this.pushFirstVal(val)
-		return
+	node := DoubleLinked{Val: val}
+	if this.Size == 0 { //第一个节点
+		this.Head = &node
+	} else {
+		node.Next = this.Head
+		this.Head.Prev = &node
+		this.Head = &node
 	}
-
-	newNode := DoubleLinked{
-		Val:  val,
-		Prev: this.Head.Prev,
-		Next: this.Head,
-	}
-	this.Head.Prev = &newNode
-	this.Head = &newNode
 	this.Size++
 }
 
 //AddAtTail 尾插
 func (this *MyLinkedList) AddAtTail(val int) {
-	if this.Size == 0 {
-		this.pushFirstVal(val)
-		return
-	}
-	node := this.Head
-	for node != nil {
-		if node.Next != nil {
-			node = node.Next
-			continue
+	node := DoubleLinked{Val: val}
+	if this.Size == 0 { //第一个节点
+		this.Head = &node
+	} else {
+		cur := this.Head
+		for cur != nil {
+			if cur.Next != nil {
+				cur = cur.Next
+				continue
+			} else {
+				cur.Next = &node
+				node.Prev = cur
+				break
+			}
 		}
-		newNode := DoubleLinked{
-			Val:  val,
-			Prev: node,
-			Next: node.Next,
-		}
-		node.Next = &newNode
-		this.Size++
 	}
+	this.Size++
 }
 
 //AddAtIndex 指定位置插入节点
@@ -96,18 +90,17 @@ func (this *MyLinkedList) AddAtIndex(index int, val int) {
 		if i != index {
 			node = node.Next
 			continue
-		}
-		newNode := DoubleLinked{
-			Val:  val,
-			Prev: node.Prev,
-			Next: node,
-		}
-		if node.Prev != nil {
+		} else {
+			newNode := DoubleLinked{
+				Val:  val,
+				Prev: node.Prev,
+				Next: node,
+			}
 			node.Prev.Next = &newNode
+			node.Prev = &newNode
+			this.Size++
+			break
 		}
-		node.Prev = &newNode
-		this.Size++
-		node = nil
 	}
 }
 
@@ -119,26 +112,26 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 
 	//删除第一个节点
 	if index == 0 {
-		if this.Head.Prev != nil {
-			this.Head.Next.Prev = this.Head.Prev
-		}
 		this.Head = this.Head.Next
 		this.Size--
+		return
 	}
 
 	//删除指定位置节点
 	node := this.Head
 	for i := 0; node != nil; i++ {
-		if i == index && i == this.Size-1 { //删除最后一个节点
+		if index == 0 && this.Size == 1 { //把仅有的一个节点删除
+			this.Head = nil
+			this.Size = 0
+		} else if i == index && i == this.Size-1 { //删除链表最尾部的一个节点
 			node.Prev.Next = node.Next
 			node.Prev = nil
 			this.Size--
-			return
 		} else if i == index { //删除指定位置
 			node.Prev.Next = node.Next
+			node.Next.Prev = node.Prev
 			node.Prev, node.Next = nil, nil
 			this.Size--
-			return
 		}
 		node = node.Next
 	}
@@ -146,19 +139,8 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 
 //isValidIndex 索引是否有效  true 有效，false 无效
 func (this *MyLinkedList) isValidIndex(index int) bool {
-	if index < 0 || index > this.Size-1 {
+	if index < 0 || index > this.Size-1 || this.Size == 0 {
 		return false
 	}
 	return true
-}
-
-//pushFirstVal 插入第一个元素
-func (this *MyLinkedList) pushFirstVal(val int) {
-	newNode := DoubleLinked{
-		Val:  val,
-		Prev: nil,
-		Next: nil,
-	}
-	this.Head = &newNode
-	this.Size++
 }
