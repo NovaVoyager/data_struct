@@ -123,15 +123,18 @@ func (this *MyLinkedList) DeleteAtIndex(index int) {
 		if index == 0 && this.Size == 1 { //把仅有的一个节点删除
 			this.Head = nil
 			this.Size = 0
+			return
 		} else if i == index && i == this.Size-1 { //删除链表最尾部的一个节点
 			node.Prev.Next = node.Next
 			node.Prev = nil
 			this.Size--
+			return
 		} else if i == index { //删除指定位置
 			node.Prev.Next = node.Next
 			node.Next.Prev = node.Prev
 			node.Prev, node.Next = nil, nil
 			this.Size--
+			return
 		}
 		node = node.Next
 	}
