@@ -1,13 +1,13 @@
 package main
 
-type MyCircularQueue struct {
+type MyLoopCircularQueue struct {
 	data       []int
 	head, tail int
 	size       int
 }
 
-func Constructor(k int) MyCircularQueue {
-	return MyCircularQueue{
+func ConstructorLoop(k int) MyLoopCircularQueue {
+	return MyLoopCircularQueue{
 		data: make([]int, k, k),
 		head: -1,
 		tail: -1,
@@ -16,7 +16,7 @@ func Constructor(k int) MyCircularQueue {
 }
 
 //EnQueue 入队
-func (this *MyCircularQueue) EnQueue(value int) bool {
+func (this *MyLoopCircularQueue) EnQueue(value int) bool {
 	if this.IsFull() {
 		return false
 	}
@@ -29,7 +29,7 @@ func (this *MyCircularQueue) EnQueue(value int) bool {
 }
 
 //DeQueue 出队
-func (this *MyCircularQueue) DeQueue() bool {
+func (this *MyLoopCircularQueue) DeQueue() bool {
 	if this.IsEmpty() {
 		return false
 	}
@@ -43,7 +43,7 @@ func (this *MyCircularQueue) DeQueue() bool {
 }
 
 //Front 获取对首元素
-func (this *MyCircularQueue) Front() int {
+func (this *MyLoopCircularQueue) Front() int {
 	if this.IsEmpty() {
 		return -1
 	}
@@ -51,7 +51,7 @@ func (this *MyCircularQueue) Front() int {
 }
 
 //Rear 获取队尾元素
-func (this *MyCircularQueue) Rear() int {
+func (this *MyLoopCircularQueue) Rear() int {
 	if this.IsEmpty() {
 		return -1
 	}
@@ -59,11 +59,11 @@ func (this *MyCircularQueue) Rear() int {
 }
 
 //IsEmpty 队列是否为空
-func (this *MyCircularQueue) IsEmpty() bool {
+func (this *MyLoopCircularQueue) IsEmpty() bool {
 	return this.head == -1
 }
 
 //IsFull 队列是否满
-func (this *MyCircularQueue) IsFull() bool {
+func (this *MyLoopCircularQueue) IsFull() bool {
 	return ((this.tail + 1) % this.size) == this.head
 }
