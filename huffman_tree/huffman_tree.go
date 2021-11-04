@@ -10,6 +10,8 @@ type HTNode struct {
 
 type HTNodes []HTNode
 
+type ElemType string
+
 func String(this HTNodes) {
 	fmt.Printf("结点\tweight\tparent\tlchild\trchild\n")
 	for i := 1; i < len(this); i++ {
@@ -76,4 +78,42 @@ func Select(ht []HTNode, n int) (s1, s2 int) {
 	}
 	s2 = min
 	return s1, s2
+}
+
+//huffmanCode 哈夫曼编码
+//chars 保存一个顺序与哈夫曼数一致的字符数组，第一个元素不使用，下标从1开始
+//返回值，返回每个char对应的哈夫曼编码
+func huffmanCode(HT HTNodes, n int, chars []ElemType) map[ElemType][]int {
+	charWithCode := make(map[ElemType][]int, n) //保存最终结果
+	for i := 1; i <= n; i++ {
+		tmp := make([]int, 0) //临时变量保存编码
+		f := HT[i].parent
+		c := i
+		for f != 0 {
+			if HT[f].lchild == c {
+				tmp = append(tmp, 0)
+			} else {
+				tmp = append(tmp, 1)
+			}
+			c = f
+			f = HT[f].parent
+		}
+
+		//因为是逆向回溯，所以编码需要倒序取出
+		tmpLastIndex := len(tmp) - 1
+		code := make([]int, 0, len(tmp))
+		for j := tmpLastIndex; j >= 0; j-- {
+			code = append(code, tmp[j])
+		}
+		charWithCode[chars[i]] = code
+	}
+	printHuffCode(charWithCode)
+	return charWithCode
+}
+
+func printHuffCode(htCode map[ElemType][]int) {
+	fmt.Printf("\nhuffman code:\n")
+	for k, v := range htCode {
+		fmt.Printf("char:%s --> code:%v\n", k, v)
+	}
 }
