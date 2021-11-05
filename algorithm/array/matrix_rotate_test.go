@@ -59,10 +59,9 @@ func Test_rotate(t *testing.T) {
 }
 
 func checkRotate(x, y [][]int) bool {
-	l := len(x)
-	for i := 0; i < l; i++ {
-		for j := 0; j < l; j++ {
-			if x[i][j] != y[i][j] {
+	for i, row := range x {
+		for j, v := range row {
+			if v != y[i][j] {
 				return false
 			}
 		}
