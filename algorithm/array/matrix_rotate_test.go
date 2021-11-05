@@ -50,7 +50,7 @@ func Test_rotate(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			rotate1(tt.args.matrix)
+			rotate3(tt.args.matrix)
 			if !checkRotate(tt.want.matrix, tt.args.matrix) {
 				t.Errorf("rotate() = %v, want %v", tt.args.matrix, tt.want.matrix)
 			}
