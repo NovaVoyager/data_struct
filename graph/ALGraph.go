@@ -36,6 +36,9 @@ type ALGraphElem struct {
 
 //NewALGraph 实例化邻接表
 func NewALGraph(vexs []VerTextType, elems []ALGraphElem) *ALGraph {
+	if len(vexs) == 0 || len(elems) == 0 {
+		return nil
+	}
 	al := ALGraph{
 		vexnum: len(vexs),
 	}
