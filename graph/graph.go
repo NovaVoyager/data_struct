@@ -8,12 +8,6 @@ const (
 	OneFlag  = 1
 )
 
-//VerTextType 顶点数据类型
-type VerTextType string
-
-//ArcType 边的权值数据类型
-type ArcType int
-
 //Elem 构建图的边元素
 type Elem struct {
 	//V1 顶点1
