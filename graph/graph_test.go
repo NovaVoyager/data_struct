@@ -77,7 +77,7 @@ func TestNewAMGraph(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := NewAMGraph(tt.args.vexs, tt.args.elems); !reflect.DeepEqual(got, tt.want) {
+			if got := NewNoAMGraph(tt.args.vexs, tt.args.elems); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("NewAMGraph() = %v, \nwant %v", got, tt.want)
 			}
 		})

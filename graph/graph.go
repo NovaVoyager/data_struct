@@ -3,6 +3,9 @@ package main
 const (
 	//MaxInt 极大值，表示无穷大
 	MaxInt = 32767
+
+	ZeroFlag = 0
+	OneFlag  = 1
 )
 
 //VerTextType 顶点数据类型
@@ -37,8 +40,8 @@ type AMGraph struct {
 	arcNum int
 }
 
-//NewAMGraph 无向网
-func NewAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
+//NewNoAMGraph 无向网
+func NewNoAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
 	if len(vexs) == 0 || len(elems) == 0 {
 		return nil
 	}
@@ -47,12 +50,38 @@ func NewAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
 		arcNum: len(elems),
 	}
 	g.createVexs(vexs)
-	g.initArcs()
-	g.setArcs(elems)
+	g.initArcs(MaxInt)
+	g.setNoAMGraphArcs(elems)
 	return g
 }
 
-func (this *AMGraph) setArcs(elems []Elem) {
+//NewNoAMFigure 无向图
+func NewNoAMFigure(vexs []VerTextType, elems []Elem) *AMGraph {
+	if len(vexs) == 0 || len(elems) == 0 {
+		return nil
+	}
+	g := &AMGraph{
+		vexNum: len(vexs),
+		arcNum: len(elems),
+	}
+	g.createVexs(vexs)
+	g.initArcs(0)
+	g.setNoFigure(elems)
+	return g
+}
+
+//setNoFigure 无向图
+func (this *AMGraph) setNoFigure(elems []Elem) {
+	for _, elem := range elems {
+		v1i := this.getIndexByVex(elem.V1)
+		v2i := this.getIndexByVex(elem.V2)
+		this.arcs[v1i][v2i] = OneFlag
+		this.arcs[v2i][v1i] = OneFlag
+	}
+}
+
+//setNoAMGraphArcs 无向网
+func (this *AMGraph) setNoAMGraphArcs(elems []Elem) {
 	for _, elem := range elems {
 		v1i := this.getIndexByVex(elem.V1)
 		v2i := this.getIndexByVex(elem.V2)
@@ -70,12 +99,12 @@ func (this *AMGraph) createVexs(vexs []VerTextType) {
 }
 
 //initArcs 初始化邻接矩阵表
-func (this *AMGraph) initArcs() {
+func (this *AMGraph) initArcs(weight ArcType) {
 	this.arcs = make([][]ArcType, 0, this.vexNum)
 	for i := 0; i < this.vexNum; i++ {
 		cols := make([]ArcType, this.vexNum, this.vexNum)
 		for j := 0; j < this.vexNum; j++ {
-			cols[j] = MaxInt
+			cols[j] = weight
 		}
 		this.arcs = append(this.arcs, cols)
 	}
