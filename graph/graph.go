@@ -48,7 +48,17 @@ func NewAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
 	}
 	g.createVexs(vexs)
 	g.initArcs()
+	g.setArcs(elems)
 	return g
+}
+
+func (this *AMGraph) setArcs(elems []Elem) {
+	for _, elem := range elems {
+		v1i := this.getIndexByVex(elem.V1)
+		v2i := this.getIndexByVex(elem.V2)
+		this.arcs[v1i][v2i] = elem.Weight
+		this.arcs[v2i][v1i] = elem.Weight
+	}
 }
 
 //createVexs 创建顶点表
@@ -61,12 +71,22 @@ func (this *AMGraph) createVexs(vexs []VerTextType) {
 
 //initArcs 初始化邻接矩阵表
 func (this *AMGraph) initArcs() {
-	archs := make([][]ArcType, 0, this.vexNum)
+	this.arcs = make([][]ArcType, 0, this.vexNum)
 	for i := 0; i < this.vexNum; i++ {
 		cols := make([]ArcType, this.vexNum, this.vexNum)
 		for j := 0; j < this.vexNum; j++ {
 			cols[j] = MaxInt
 		}
-		archs = append(archs, cols)
+		this.arcs = append(this.arcs, cols)
 	}
+}
+
+//getIndexByVex 获取顶点表下标
+func (this *AMGraph) getIndexByVex(vex VerTextType) int {
+	for index, vexVal := range this.vexs {
+		if vex == vexVal {
+			return index
+		}
+	}
+	return -1
 }
