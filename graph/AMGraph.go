@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 const (
 	//MaxInt 极大值，表示无穷大
 	MaxInt = 32767
@@ -86,10 +88,11 @@ func (this *AMGraph) setNoAMGraphArcs(elems []Elem) {
 
 //createVexs 创建顶点表
 func (this *AMGraph) createVexs(vexs []VerTextType) {
-	this.vexs = make([]VerTextType, 0, len(vexs))
-	for _, vex := range vexs {
-		this.vexs = append(this.vexs, vex)
-	}
+	//this.vexs = make([]VerTextType, 0, len(vexs))
+	//for _, vex := range vexs {
+	//	this.vexs = append(this.vexs, vex)
+	//}
+	this.vexs = vexs
 }
 
 //initArcs 初始化邻接矩阵表
@@ -112,4 +115,21 @@ func (this *AMGraph) getIndexByVex(vex VerTextType) int {
 		}
 	}
 	return -1
+}
+
+//forDepthAMGraph 深度优先遍历图
+func (this *AMGraph) forDepthAMGraph(v int) {
+	visited := make([]bool, len(this.vexs), len(this.vexs))
+	this.DFS(v, visited)
+}
+
+//DFS 深度优先遍历
+func (this *AMGraph) DFS(v int, visited []bool) {
+	fmt.Printf("顶点：%d,value:%s\n", v, this.vexs[v])
+	visited[v] = true
+	for i := 0; i < this.vexNum; i++ {
+		if this.arcs[v][i] != 0 && !visited[i] {
+			this.DFS(i, visited)
+		}
+	}
 }
