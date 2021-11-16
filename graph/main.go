@@ -1,9 +1,7 @@
 package main
 
-import "fmt"
-
 func main() {
-	am()
+	al()
 }
 
 func am() {
@@ -45,5 +43,5 @@ func al() {
 	}
 	vexs := []VerTextType{"A", "B", "C", "D", "E"}
 	g := NewALGraph(vexs, elems)
-	fmt.Println(g)
+	g.forBreadthALGraph()
 }

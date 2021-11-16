@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 //ArcNode 邻接表，边的存储结构
 type ArcNode struct {
 	adjvex int
@@ -110,4 +112,28 @@ func (this *ALGraph) getIndexByVex(vex VerTextType) int {
 		}
 	}
 	return -1
+}
+
+//forBreadthALGraph 广度优先搜索遍历
+func (this *ALGraph) forBreadthALGraph() {
+	visited := make([]bool, this.vexnum, this.vexnum)
+	this.BFS(0, visited)
+}
+
+//BFS 广度优先搜索
+func (this *ALGraph) BFS(v int, visited []bool) {
+	queue := NewQueue()
+	queue.pushQueue(v)
+	for !queue.emptyQueue() {
+		u := queue.popQueue()
+		arcNode := this.vertices[u].arcNode
+		for arcNode != nil {
+			if !visited[arcNode.adjvex] {
+				fmt.Printf("顶点：%d,value:%s\n", arcNode.adjvex, this.vertices[arcNode.adjvex].data)
+				visited[arcNode.adjvex] = true
+				queue.pushQueue(arcNode.adjvex)
+			}
+			arcNode = arcNode.next
+		}
+	}
 }
