@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	al()
+	am()
 }
 
 func am() {
@@ -11,10 +11,12 @@ func am() {
 		{V1: "A", V2: "C", Weight: 12},
 		{V1: "A", V2: "E", Weight: 5},
 		{V1: "B", V2: "D", Weight: 20},
+		{V1: "B", V2: "E", Weight: 18},
 		{V1: "C", V2: "D", Weight: 25},
 	}
 	graph := NewNoAMGraph(vexs, elems)
-	graph.forDepthAMGraph(1)
+	//graph.forDepthAMGraph(1)
+	graph.Prim(0)
 }
 
 func al() {

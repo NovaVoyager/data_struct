@@ -83,3 +83,89 @@ func TestNewAMGraph(t *testing.T) {
 		})
 	}
 }
+
+func TestAMGraph_minEdge(t *testing.T) {
+	type fields struct {
+		vexs   []VerTextType
+		arcs   [][]ArcType
+		vexNum int
+		arcNum int
+	}
+	type args struct {
+		se []shortEdge
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		args   args
+		want   int
+	}{
+		{
+			name: "1",
+			fields: fields{
+				vexs: []VerTextType{"A", "B", "C", "D", "E", "F"},
+				arcs: [][]ArcType{
+					{0, 34, 46, MaxInt, MaxInt, 19},
+					{34, 0, MaxInt, MaxInt, 12, MaxInt},
+					{46, MaxInt, 0, 17, MaxInt, 25},
+					{MaxInt, MaxInt, 17, 0, 38, 25},
+					{MaxInt, 12, MaxInt, 38, 0, 26},
+					{19, MaxInt, 25, 25, 26, 0},
+				},
+				vexNum: 6,
+				arcNum: 6,
+			},
+			args: args{
+				se: []shortEdge{
+					{adjvex: 0, lowCost: 0},
+					{adjvex: 0, lowCost: 34},
+					{adjvex: 0, lowCost: 46},
+					{adjvex: 0, lowCost: MaxInt},
+					{adjvex: 0, lowCost: MaxInt},
+					{adjvex: 0, lowCost: 19},
+				},
+			},
+			want: 5,
+		},
+		{
+			name: "2",
+			fields: fields{
+				vexs: []VerTextType{"A", "B", "C", "D", "E", "F"},
+				arcs: [][]ArcType{
+					{0, 34, 46, MaxInt, MaxInt, 19},
+					{34, 0, MaxInt, MaxInt, 12, MaxInt},
+					{46, MaxInt, 0, 17, MaxInt, 25},
+					{MaxInt, MaxInt, 17, 0, 38, 25},
+					{MaxInt, 12, MaxInt, 38, 0, 26},
+					{19, MaxInt, 25, 25, 26, 0},
+				},
+				vexNum: 6,
+				arcNum: 6,
+			},
+			args: args{
+				se: []shortEdge{
+					{adjvex: 0, lowCost: 0},
+					{adjvex: 0, lowCost: 34},
+					{adjvex: 5, lowCost: 25},
+					{adjvex: 5, lowCost: 25},
+					{adjvex: 5, lowCost: 26},
+					{adjvex: 0, lowCost: 0},
+				},
+			},
+			want: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			this := &AMGraph{
+				vexs:   tt.fields.vexs,
+				arcs:   tt.fields.arcs,
+				vexNum: tt.fields.vexNum,
+				arcNum: tt.fields.arcNum,
+			}
+			if got := this.minEdge(tt.args.se); got != tt.want {
+				t.Errorf("minEdge() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

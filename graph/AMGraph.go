@@ -101,7 +101,11 @@ func (this *AMGraph) initArcs(weight ArcType) {
 	for i := 0; i < this.vexNum; i++ {
 		cols := make([]ArcType, this.vexNum, this.vexNum)
 		for j := 0; j < this.vexNum; j++ {
-			cols[j] = weight
+			if i == j {
+				cols[j] = ZeroFlag
+			} else {
+				cols[j] = weight
+			}
 		}
 		this.arcs = append(this.arcs, cols)
 	}
@@ -132,4 +136,73 @@ func (this *AMGraph) DFS(v int, visited []bool) {
 			this.DFS(i, visited)
 		}
 	}
+}
+
+//shortEdge 普里姆算法辅助数组
+type shortEdge struct {
+	//adjvex 顶点下标
+	adjvex int
+
+	//lowCost 两个顶点之间边的最小权值,当为0时，表示该顶点已被加入U集合
+	lowCost ArcType
+}
+
+//Prim 普利姆算法 最小生成树
+func (this *AMGraph) Prim(startV int) {
+	if this.vexNum == 0 {
+		fmt.Println("图为空!!!")
+		return
+	}
+
+	//初始辅助数组
+	shortEdges := make([]shortEdge, 0, this.vexNum)
+	for i := 0; i < this.vexNum; i++ {
+		data := shortEdge{
+			adjvex:  startV,
+			lowCost: this.arcs[startV][i],
+		}
+		shortEdges = append(shortEdges, data)
+	}
+	shortEdges[startV].lowCost = 0 //把初始顶点加入集合U
+
+	for i := 0; i < this.vexNum-1; i++ {
+		k := this.minEdge(shortEdges)    //寻找最短边的邻接点
+		this.outputMST(k, shortEdges[k]) //输出最小生成树路径
+		shortEdges[k].lowCost = 0        //将顶点k加入到集合U中
+		for j := 0; j < this.vexNum; j++ {
+			if this.arcs[k][j] < shortEdges[j].lowCost {
+				shortEdges[j].lowCost = this.arcs[k][j]
+				shortEdges[j].adjvex = k
+			}
+		}
+	}
+}
+
+//minEdge 寻找最短边的邻接点
+func (this *AMGraph) minEdge(se []shortEdge) int {
+	min := 0
+	var minVal ArcType
+	for i, v := range se {
+		if v.lowCost != 0 { //初始化不属于U集合的值
+			min = i
+			minVal = v.lowCost
+		}
+	}
+
+	for i := 0; i < this.vexNum; i++ {
+		if se[i].lowCost == 0 { //该顶点已属于U集合
+			continue
+		}
+		if se[i].lowCost < minVal {
+			min = i
+			minVal = se[i].lowCost
+		}
+	}
+
+	return min
+}
+
+//outputMST 输出MST
+func (this *AMGraph) outputMST(k int, se shortEdge) {
+	fmt.Println(fmt.Sprintf("(%d,%d)%d", se.adjvex, k, se.lowCost))
 }
