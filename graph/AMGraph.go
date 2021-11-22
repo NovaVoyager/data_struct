@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
 const (
 	//MaxInt 极大值，表示无穷大
@@ -205,4 +208,99 @@ func (this *AMGraph) minEdge(se []shortEdge) int {
 //outputMST 输出MST
 func (this *AMGraph) outputMST(k int, se shortEdge) {
 	fmt.Println(fmt.Sprintf("(%d,%d)%d", se.adjvex, k, se.lowCost))
+}
+
+//EdgeType 克鲁斯卡尔算法辅助数据结构
+type EdgeType struct {
+	//from 出发顶点
+	from int
+
+	//to 到达顶点
+	to int
+
+	//weight 边上权值
+	weight ArcType
+}
+
+//EdgeGraph 克鲁斯卡尔算法图的存储结构
+type EdgeGraph struct {
+
+	//vertexs 顶点数组
+	vertexs []VerTextType
+
+	//edges 存放边的数组
+	edges []EdgeType
+
+	//vexNum 顶点数
+	vexNum int
+
+	//edgeNum 边数
+	edgeNum int
+}
+
+//NewEdgeGraph 创建对象
+func NewEdgeGraph(vertexs []VerTextType, edges []EdgeType) *EdgeGraph {
+	if len(vertexs) == 0 || len(edges) == 0 {
+		return nil
+	}
+	g := EdgeGraph{
+		vertexs: vertexs,
+		edges:   edges,
+		vexNum:  len(vertexs),
+		edgeNum: len(edges),
+	}
+	g.sort()
+	return &g
+}
+
+//sort 对边按照权值 由小到大排序
+func (this *EdgeGraph) sort() {
+	sort.Slice(this.edges, func(i, j int) bool {
+		if this.edges[i].weight < this.edges[j].weight {
+			return true
+		}
+		return false
+	})
+}
+
+//Kruskal 克鲁斯卡尔算法
+func (this *EdgeGraph) Kruskal() {
+	//初始化双亲
+	parent := make([]int, 0, this.vexNum)
+	for i := 0; i < this.vexNum; i++ {
+		parent = append(parent, -1)
+	}
+
+	for i, num := 0, 0; i < this.vexNum; i++ {
+		//找到所在生成树的根节点
+		vex1 := this.findRoot(parent, this.edges[i].from)
+		//找到所在生成树的根节点
+		vex2 := this.findRoot(parent, this.edges[i].to)
+		if vex1 != vex2 { //找到两个根节点不相同，说明在两个联通分量，不会构成环
+			this.outputMST(this.edges[i])
+
+			//合并生成树
+			parent[vex2] = vex1
+			num++
+		}
+
+		//判断边数为顶点数-1时，直接返回
+		if num == this.vexNum-1 {
+			break
+		}
+	}
+}
+
+//findRoot 找到所在生成树的根节点
+func (this *EdgeGraph) findRoot(parent []int, v int) int {
+	t := v
+	for parent[t] > -1 {
+		t = parent[t]
+	}
+	return t
+}
+
+//outputMST 输出MST
+func (this *EdgeGraph) outputMST(edge EdgeType) {
+	fmt.Println(fmt.Sprintf("(%d,%d)%d", edge.from, edge.to, edge.weight))
 }

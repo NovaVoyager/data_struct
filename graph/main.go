@@ -1,7 +1,25 @@
 package main
 
 func main() {
-	am()
+	edge()
+}
+
+func edge() {
+	vertexs := []VerTextType{"A", "B", "C", "D", "E", "F"}
+	edges := []EdgeType{
+		{from: 0, to: 1, weight: 30},
+		{from: 0, to: 2, weight: 46},
+		{from: 0, to: 5, weight: 19},
+		{from: 1, to: 4, weight: 12},
+		{from: 2, to: 5, weight: 25},
+		{from: 2, to: 3, weight: 17},
+		{from: 3, to: 4, weight: 38},
+		{from: 4, to: 5, weight: 26},
+		{from: 3, to: 5, weight: 25},
+	}
+
+	g := NewEdgeGraph(vertexs, edges)
+	g.Kruskal()
 }
 
 func am() {
