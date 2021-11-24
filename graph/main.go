@@ -1,7 +1,29 @@
 package main
 
+import "fmt"
+
 func main() {
-	edge()
+	dijkstra()
+}
+
+func dijkstra() {
+	vexs := []VerTextType{"A", "B", "C", "D", "E", "F", "G"}
+	elems := []Elem{
+		{V1: "A", V2: "B", Weight: 4},
+		{V1: "A", V2: "C", Weight: 6},
+		{V1: "A", V2: "D", Weight: 6},
+		{V1: "B", V2: "C", Weight: 1},
+		{V1: "B", V2: "E", Weight: 7},
+		{V1: "C", V2: "E", Weight: 6},
+		{V1: "C", V2: "F", Weight: 4},
+		{V1: "D", V2: "C", Weight: 2},
+		{V1: "D", V2: "F", Weight: 5},
+		{V1: "E", V2: "G", Weight: 6},
+		{V1: "F", V2: "E", Weight: 1},
+		{V1: "F", V2: "G", Weight: 8},
+	}
+	graph := NewAMGraph(vexs, elems)
+	fmt.Println(graph)
 }
 
 func edge() {

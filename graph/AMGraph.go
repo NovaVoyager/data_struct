@@ -11,6 +11,11 @@ const (
 
 	ZeroFlag = 0
 	OneFlag  = 1
+
+	//directedFlag 有向标记
+	directedFlag = true
+	//unDirectedFlag 无向标记
+	unDirectedFlag = false
 )
 
 //Elem 构建图的边元素
@@ -50,7 +55,22 @@ func NewNoAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
 	}
 	g.createVexs(vexs)
 	g.initArcs(MaxInt)
-	g.setNoAMGraphArcs(elems)
+	g.setAMGraphArcs(elems, unDirectedFlag)
+	return g
+}
+
+//NewAMGraph 有向网
+func NewAMGraph(vexs []VerTextType, elems []Elem) *AMGraph {
+	if len(vexs) == 0 || len(elems) == 0 {
+		return nil
+	}
+	g := &AMGraph{
+		vexNum: len(vexs),
+		arcNum: len(elems),
+	}
+	g.createVexs(vexs)
+	g.initArcs(MaxInt)
+	g.setAMGraphArcs(elems, directedFlag)
 	return g
 }
 
@@ -79,22 +99,20 @@ func (this *AMGraph) setNoFigure(elems []Elem) {
 	}
 }
 
-//setNoAMGraphArcs 无向网
-func (this *AMGraph) setNoAMGraphArcs(elems []Elem) {
+//setAMGraphArcs 无向网
+func (this *AMGraph) setAMGraphArcs(elems []Elem, direction bool) {
 	for _, elem := range elems {
 		v1i := this.getIndexByVex(elem.V1)
 		v2i := this.getIndexByVex(elem.V2)
 		this.arcs[v1i][v2i] = elem.Weight
-		this.arcs[v2i][v1i] = elem.Weight
+		if !direction { //无向
+			this.arcs[v2i][v1i] = elem.Weight
+		}
 	}
 }
 
 //createVexs 创建顶点表
 func (this *AMGraph) createVexs(vexs []VerTextType) {
-	//this.vexs = make([]VerTextType, 0, len(vexs))
-	//for _, vex := range vexs {
-	//	this.vexs = append(this.vexs, vex)
-	//}
 	this.vexs = vexs
 }
 
@@ -263,7 +281,7 @@ func (this *EdgeGraph) sort() {
 	})
 }
 
-//Kruskal 克鲁斯卡尔算法
+//Kruskal 克鲁斯卡尔算法 最小生成树
 func (this *EdgeGraph) Kruskal() {
 	//初始化双亲
 	parent := make([]int, 0, this.vexNum)
