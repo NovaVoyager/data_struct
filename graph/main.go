@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 	dijkstra()
 }
@@ -23,7 +21,7 @@ func dijkstra() {
 		{V1: "F", V2: "G", Weight: 8},
 	}
 	graph := NewAMGraph(vexs, elems)
-	fmt.Println(graph)
+	graph.Dijkstra(0)
 }
 
 func edge() {

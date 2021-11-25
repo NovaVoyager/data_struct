@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"sort"
+	"strings"
 )
 
 const (
@@ -226,6 +227,89 @@ func (this *AMGraph) minEdge(se []shortEdge) int {
 //outputMST 输出MST
 func (this *AMGraph) outputMST(k int, se shortEdge) {
 	fmt.Println(fmt.Sprintf("(%d,%d)%d", se.adjvex, k, se.lowCost))
+}
+
+//Dijkstra 迪杰斯特拉算法
+func (this *AMGraph) Dijkstra(startV int) {
+	//初始化元素
+	s := make([]int, this.vexNum, this.vexNum)    //保存是否被访问元素
+	dist := make([]ArcType, 0, this.vexNum)       //保存顶点到到各顶点最小的权值
+	path := make([]int, this.vexNum, this.vexNum) //保存各顶最小权值路径
+	for i := 0; i < this.vexNum; i++ {
+		dist = append(dist, this.arcs[startV][i])
+		if this.arcs[startV][i] == MaxInt {
+			path[i] = -1
+		} else {
+			path[i] = startV
+		}
+	}
+	s[startV] = 1 //把初始顶点加入s集合
+
+	num := 1
+	for num < this.vexNum {
+		num++
+		//找到权值最小元素返回下标
+		min := this.findMinDist(s, dist)
+		s[min] = 1 //加入s集合
+
+		//调整dist和path
+		for i := 0; i < this.vexNum; i++ {
+			if (s[i] == 0) && (dist[i] > dist[min]+this.arcs[min][i]) {
+				dist[i] = dist[min] + this.arcs[min][i] //找到的最短路径去修改dist对应的顶点值
+				path[i] = min                           //更新path为当前最小路径顶点值
+			}
+		}
+	}
+
+	//打印起始点到各个顶点最短路径
+	this.displayPath(startV, dist, path)
+}
+
+//displayPath 打印起始点到各个顶点最短路径
+func (this *AMGraph) displayPath(startV int, dist []ArcType, path []int) {
+	for i := 0; i < this.vexNum; i++ {
+		if i == startV { //访问的是起始顶点
+			continue
+		}
+		fmt.Printf("顶点：%s,下标：%d -> 顶点：%s,下标：%d 的最短路径权值：%d  ", this.vexs[startV], startV, this.vexs[i],
+			i, dist[i])
+		func(pathIndex int) {
+			paths := []int{pathIndex}
+			tmp := path[pathIndex]
+			paths = append(paths, tmp)
+			for tmp != 0 {
+				tmp = path[tmp]
+				paths = append(paths, tmp)
+			}
+
+			//逆向输出
+			var s VerTextType = ""
+			for j := len(paths) - 1; j >= 0; j-- {
+				s += this.vexs[paths[j]] + "->"
+			}
+			newStr := strings.TrimRight(string(s), "->")
+			fmt.Printf("%s", newStr)
+		}(i)
+
+		fmt.Printf("\n")
+	}
+
+}
+
+//findMinDist 获取最小权值下标
+func (this *AMGraph) findMinDist(s []int, dist []ArcType) int {
+	minI := 0
+	var minV ArcType = MaxInt
+	for i := 0; i < this.vexNum; i++ {
+		if s[i] == 1 { //存在s集合中,跳过
+			continue
+		}
+		if dist[i] < minV {
+			minV = dist[i]
+			minI = i
+		}
+	}
+	return minI
 }
 
 //EdgeType 克鲁斯卡尔算法辅助数据结构
