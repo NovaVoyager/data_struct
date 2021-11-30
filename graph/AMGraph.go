@@ -312,6 +312,46 @@ func (this *AMGraph) findMinDist(s []int, dist []ArcType) int {
 	return minI
 }
 
+//Floyd 弗洛伊德算法
+func (this *AMGraph) Floyd() {
+	//初始化辅助数据
+	dist := make([][]ArcType, 0, this.vexNum)
+	path := make([][]int, 0, this.vexNum)
+	for i := 0; i < this.vexNum; i++ {
+		p := make([]int, 0, this.vexNum)
+		d := make([]ArcType, 0, this.vexNum)
+		for j := 0; j < this.vexNum; j++ {
+			p = append(p, 0)
+			d = append(d, MaxInt)
+		}
+		path = append(path, p)
+		dist = append(dist, d)
+	}
+	for i := 0; i < this.vexNum; i++ {
+		for j := 0; j < this.vexNum; j++ {
+			dist[i][j] = this.arcs[i][j]
+			if dist[i][j] < MaxInt && i != j {
+				path[i][j] = i
+			} else {
+				path[i][j] = -1
+			}
+		}
+	}
+
+	for k := 0; k < this.vexNum; k++ {
+		for i := 0; i < this.vexNum; i++ {
+			for j := 0; j < this.vexNum; j++ {
+				if dist[i][j] > dist[i][k]+dist[k][j] {
+					dist[i][j] = dist[i][k] + dist[k][j]
+					path[i][j] = path[k][j]
+				}
+			}
+		}
+	}
+
+	fmt.Println(path)
+}
+
 //EdgeType 克鲁斯卡尔算法辅助数据结构
 type EdgeType struct {
 	//from 出发顶点

@@ -1,7 +1,23 @@
 package main
 
 func main() {
-	dijkstra()
+	floyd()
+}
+
+func floyd() {
+	vexs := []VerTextType{"A", "B", "C", "D"}
+	elems := []Elem{
+		{V1: "A", V2: "B", Weight: 1},
+		{V1: "A", V2: "D", Weight: 4},
+		{V1: "B", V2: "C", Weight: 9},
+		{V1: "B", V2: "D", Weight: 2},
+		{V1: "C", V2: "A", Weight: 3},
+		{V1: "C", V2: "B", Weight: 5},
+		{V1: "C", V2: "D", Weight: 8},
+		{V1: "D", V2: "C", Weight: 6},
+	}
+	graph := NewAMGraph(vexs, elems)
+	graph.Floyd()
 }
 
 func dijkstra() {
