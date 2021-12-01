@@ -1,7 +1,7 @@
 package main
 
 func main() {
-	floyd()
+	alAOV()
 }
 
 func floyd() {
@@ -73,7 +73,7 @@ func am() {
 	graph.Prim(0)
 }
 
-func al() {
+func alt() {
 	elems := []ALGraphElem{
 		{
 			vex: "A",
@@ -97,7 +97,65 @@ func al() {
 			},
 		},
 	}
-	vexs := []VerTextType{"A", "B", "C", "D", "E"}
+	vexs := []Vexs{
+		{V: "A"},
+		{V: "B"},
+		{V: "C"},
+		{V: "D"},
+		{V: "E"},
+	}
 	g := NewALGraph(vexs, elems)
 	g.forBreadthALGraph()
+}
+
+func alAOV() {
+	elems := []ALGraphElem{
+		{
+			vex:  "A",
+			side: nil,
+		},
+		{
+			vex: "B",
+			side: []ALElem{
+				{V1: "A"},
+				{V1: "D"},
+			},
+		},
+		{
+			vex: "C",
+			side: []ALElem{
+				{V1: "A"},
+				{V1: "D"},
+			},
+		},
+		{
+			vex: "D",
+			side: []ALElem{
+				{V1: "A"},
+				{V1: "F"},
+			},
+		},
+		{
+			vex: "E",
+			side: []ALElem{
+				{V1: "C"},
+				{V1: "D"},
+				{V1: "F"},
+			},
+		},
+		{
+			vex:  "F",
+			side: nil,
+		},
+	}
+	vexs := []Vexs{
+		{V: "A", InNum: 3},
+		{V: "B", InNum: 0},
+		{V: "C", InNum: 1},
+		{V: "D", InNum: 3},
+		{V: "E", InNum: 0},
+		{V: "F", InNum: 2},
+	}
+	g := NewALGraph(vexs, elems)
+	g.AOVSort()
 }

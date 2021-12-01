@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"strings"
+)
 
 //ArcNode 邻接表，边的存储结构
 type ArcNode struct {
@@ -11,6 +14,9 @@ type ArcNode struct {
 
 //VexNode 顶点表
 type VexNode struct {
+	//inNum 入度数量
+	inNum int
+
 	data    VerTextType
 	arcNode *ArcNode
 }
@@ -36,8 +42,13 @@ type ALGraphElem struct {
 	side []ALElem
 }
 
+type Vexs struct {
+	V     VerTextType
+	InNum int
+}
+
 //NewALGraph 实例化邻接表
-func NewALGraph(vexs []VerTextType, elems []ALGraphElem) *ALGraph {
+func NewALGraph(vexs []Vexs, elems []ALGraphElem) *ALGraph {
 	if len(vexs) == 0 || len(elems) == 0 {
 		return nil
 	}
@@ -49,7 +60,7 @@ func NewALGraph(vexs []VerTextType, elems []ALGraphElem) *ALGraph {
 }
 
 //createALGraph 创建邻接表
-func (this *ALGraph) createALGraph(vexs []VerTextType, elems []ALGraphElem) {
+func (this *ALGraph) createALGraph(vexs []Vexs, elems []ALGraphElem) {
 	//创建顶点表
 	this.createVex(vexs)
 	//创建边表
@@ -57,12 +68,13 @@ func (this *ALGraph) createALGraph(vexs []VerTextType, elems []ALGraphElem) {
 }
 
 //createVex 创建顶点表
-func (this *ALGraph) createVex(vexs []VerTextType) {
+func (this *ALGraph) createVex(vexs []Vexs) {
 	this.vertices = make([]VexNode, 0, this.vexnum)
 	for _, vex := range vexs {
 		data := VexNode{
-			data:    vex,
+			data:    vex.V,
 			arcNode: nil,
+			inNum:   vex.InNum,
 		}
 		this.vertices = append(this.vertices, data)
 	}
@@ -136,4 +148,36 @@ func (this *ALGraph) BFS(v int, visited []bool) {
 			arcNode = arcNode.next
 		}
 	}
+}
+
+//AOVSort 拓扑排序
+func (this *ALGraph) AOVSort() {
+	queue := NewAOVQueue() //初始化辅助队列
+	count := 0             //初始化累加器，用于判断是否有回路
+	aovPath := ""
+	for _, vex := range this.vertices {
+		if vex.inNum == 0 {
+			queue.pushQueue(vex)
+		}
+	}
+
+	for !queue.emptyQueue() {
+		vex := queue.popQueue()
+		aovPath += string(vex.data) + " -> "
+		//将vex的各个邻接点入度减1
+		tmp := vex.arcNode
+		for tmp != nil {
+			this.vertices[tmp.adjvex].inNum--
+			if this.vertices[tmp.adjvex].inNum == 0 { //将新的入度为0的顶点加入队列
+				queue.pushQueue(this.vertices[tmp.adjvex])
+			}
+			tmp = tmp.next
+		}
+		count++
+	}
+
+	if count < this.vexnum {
+		fmt.Println("存在回路！")
+	}
+	fmt.Println("拓扑排序：", strings.TrimRight(aovPath, " -> "))
 }
