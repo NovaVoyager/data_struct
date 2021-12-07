@@ -1,8 +1,15 @@
-package main
+package CriticalPathAlgorithm
 
 import (
 	"fmt"
+	"strings"
 )
+
+//VerTextType 顶点数据类型
+type VerTextType string
+
+//ArcType 边的权值数据类型
+type ArcType int
 
 //ArcNode 邻接表，边的存储结构
 type ArcNode struct {
@@ -24,6 +31,11 @@ type VexNode struct {
 type ALGraph struct {
 	vertices       []VexNode
 	vexnum, arcnum int
+
+	//ve 事件最早发生时间
+	ve []ArcType
+	//vl 事件最迟发生时间
+	vl []ArcType
 }
 
 //ALElem 构建图的边元素
@@ -37,8 +49,8 @@ type ALElem struct {
 
 //ALGraphElem 邻接表创建元素
 type ALGraphElem struct {
-	vex  VerTextType
-	side []ALElem
+	Vex  VerTextType
+	Side []ALElem
 }
 
 type Vexs struct {
@@ -85,9 +97,9 @@ func (this *ALGraph) createArc(elems []ALGraphElem) {
 		//找到顶点
 		//遍历边，生产边的链表
 		//顶点指向链表第一个节点
-		vexi := this.getIndexByVex(elem.vex)
+		vexi := this.getIndexByVex(elem.Vex)
 
-		for _, side := range elem.side {
+		for _, side := range elem.Side {
 			//顶点到边
 			v1i := this.getIndexByVex(side.V1)
 			this.pushSide(vexi, v1i, side.Weight)
@@ -125,26 +137,34 @@ func (this *ALGraph) getIndexByVex(vex VerTextType) int {
 	return -1
 }
 
-//forBreadthALGraph 广度优先搜索遍历
-func (this *ALGraph) forBreadthALGraph() {
-	visited := make([]bool, this.vexnum, this.vexnum)
-	this.BFS(0, visited)
-}
-
-//BFS 广度优先搜索
-func (this *ALGraph) BFS(v int, visited []bool) {
-	queue := NewQueue()
-	queue.pushQueue(v)
-	for !queue.emptyQueue() {
-		u := queue.popQueue()
-		arcNode := this.vertices[u].arcNode
-		for arcNode != nil {
-			if !visited[arcNode.adjvex] {
-				fmt.Printf("顶点：%d,value:%s\n", arcNode.adjvex, this.vertices[arcNode.adjvex].data)
-				visited[arcNode.adjvex] = true
-				queue.pushQueue(arcNode.adjvex)
-			}
-			arcNode = arcNode.next
+//AOVSort 拓扑排序
+func (this *ALGraph) AOVSort() {
+	queue := NewAOVQueue() //初始化辅助队列
+	count := 0             //初始化累加器，用于判断是否有回路
+	aovPath := ""
+	for _, vex := range this.vertices {
+		if vex.inNum == 0 {
+			queue.pushQueue(vex)
 		}
 	}
+
+	for !queue.emptyQueue() {
+		vex := queue.popQueue()
+		aovPath += string(vex.data) + " -> "
+		//将vex的各个邻接点入度减1
+		tmp := vex.arcNode
+		for tmp != nil {
+			this.vertices[tmp.adjvex].inNum--
+			if this.vertices[tmp.adjvex].inNum == 0 { //将新的入度为0的顶点加入队列
+				queue.pushQueue(this.vertices[tmp.adjvex])
+			}
+			tmp = tmp.next
+		}
+		count++
+	}
+
+	if count < this.vexnum {
+		fmt.Println("存在回路！")
+	}
+	fmt.Println("拓扑排序：", strings.TrimRight(aovPath, " -> "))
 }

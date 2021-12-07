@@ -1,4 +1,4 @@
-package main
+package CriticalPathAlgorithm
 
 type AOVQueueNode struct {
 	data VexNode

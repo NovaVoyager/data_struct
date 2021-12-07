@@ -1,7 +1,9 @@
 package main
 
+import "github.com/miaogu-go/data_struct/graph/CriticalPathAlgorithm"
+
 func main() {
-	alAOV()
+	alV()
 }
 
 func floyd() {
@@ -109,46 +111,46 @@ func alt() {
 }
 
 func alAOV() {
-	elems := []ALGraphElem{
+	elems := []CriticalPathAlgorithm.ALGraphElem{
 		{
-			vex:  "A",
-			side: nil,
+			Vex:  "A",
+			Side: nil,
 		},
 		{
-			vex: "B",
-			side: []ALElem{
+			Vex: "B",
+			Side: []CriticalPathAlgorithm.ALElem{
 				{V1: "A"},
 				{V1: "D"},
 			},
 		},
 		{
-			vex: "C",
-			side: []ALElem{
+			Vex: "C",
+			Side: []CriticalPathAlgorithm.ALElem{
 				{V1: "A"},
 				{V1: "D"},
 			},
 		},
 		{
-			vex: "D",
-			side: []ALElem{
+			Vex: "D",
+			Side: []CriticalPathAlgorithm.ALElem{
 				{V1: "A"},
 				{V1: "F"},
 			},
 		},
 		{
-			vex: "E",
-			side: []ALElem{
+			Vex: "E",
+			Side: []CriticalPathAlgorithm.ALElem{
 				{V1: "C"},
 				{V1: "D"},
 				{V1: "F"},
 			},
 		},
 		{
-			vex:  "F",
-			side: nil,
+			Vex:  "F",
+			Side: nil,
 		},
 	}
-	vexs := []Vexs{
+	vexs := []CriticalPathAlgorithm.Vexs{
 		{V: "A", InNum: 3},
 		{V: "B", InNum: 0},
 		{V: "C", InNum: 1},
@@ -156,6 +158,79 @@ func alAOV() {
 		{V: "E", InNum: 0},
 		{V: "F", InNum: 2},
 	}
-	g := NewALGraph(vexs, elems)
+	g := CriticalPathAlgorithm.NewALGraph(vexs, elems)
+	g.AOVSort()
+}
+
+func alV() {
+	elems := []CriticalPathAlgorithm.ALGraphElem{
+		{
+			Vex: "V0",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V1", Weight: 6},
+				{V1: "V2", Weight: 4},
+				{V1: "V3", Weight: 5},
+			},
+		},
+		{
+			Vex: "V1",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V4", Weight: 1},
+			},
+		},
+		{
+			Vex: "V2",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V4", Weight: 1},
+			},
+		},
+		{
+			Vex: "V3",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V5", Weight: 2},
+			},
+		},
+		{
+			Vex: "V4",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V6", Weight: 9},
+				{V1: "V7", Weight: 7},
+			},
+		},
+		{
+			Vex: "V5",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V7", Weight: 4},
+			},
+		},
+		{
+			Vex: "V6",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V8", Weight: 2},
+			},
+		},
+		{
+			Vex: "V7",
+			Side: []CriticalPathAlgorithm.ALElem{
+				{V1: "V8", Weight: 4},
+			},
+		},
+		{
+			Vex:  "V8",
+			Side: nil,
+		},
+	}
+	vexs := []CriticalPathAlgorithm.Vexs{
+		{V: "V0", InNum: 0},
+		{V: "V1", InNum: 1},
+		{V: "V2", InNum: 1},
+		{V: "V3", InNum: 1},
+		{V: "V4", InNum: 2},
+		{V: "V5", InNum: 1},
+		{V: "V6", InNum: 1},
+		{V: "V7", InNum: 2},
+		{V: "V8", InNum: 2},
+	}
+	g := CriticalPathAlgorithm.NewALGraph(vexs, elems)
 	g.AOVSort()
 }
