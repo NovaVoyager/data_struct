@@ -1,9 +1,11 @@
 package CriticalPathAlgorithm
 
 import (
+	"errors"
 	"fmt"
-	"strings"
 )
+
+var ExistLoopErr = errors.New("图存在回路！")
 
 //VerTextType 顶点数据类型
 type VerTextType string
@@ -104,8 +106,8 @@ func (this *ALGraph) createArc(elems []ALGraphElem) {
 			v1i := this.getIndexByVex(side.V1)
 			this.pushSide(vexi, v1i, side.Weight)
 			//边到顶点
-			sideVexIndex := this.getIndexByVex(side.V1)
-			this.pushSide(sideVexIndex, vexi, side.Weight)
+			//sideVexIndex := this.getIndexByVex(side.V1)
+			//this.pushSide(sideVexIndex, vexi, side.Weight)
 			this.arcnum++
 		}
 	}
@@ -138,10 +140,14 @@ func (this *ALGraph) getIndexByVex(vex VerTextType) int {
 }
 
 //AOVSort 拓扑排序
-func (this *ALGraph) AOVSort() {
+func (this *ALGraph) AOVSort() ([]int, error) {
+	//初始化事件最早发生时间数组
+	this.ve = make([]ArcType, this.vexnum)
+
 	queue := NewAOVQueue() //初始化辅助队列
 	count := 0             //初始化累加器，用于判断是否有回路
-	aovPath := ""
+	topResult := make([]int, 0, this.vexnum)
+	//aovPath := ""
 	for _, vex := range this.vertices {
 		if vex.inNum == 0 {
 			queue.pushQueue(vex)
@@ -150,21 +156,80 @@ func (this *ALGraph) AOVSort() {
 
 	for !queue.emptyQueue() {
 		vex := queue.popQueue()
-		aovPath += string(vex.data) + " -> "
+		vexIndex := this.getIndexByVex(vex.data)
+		topResult = append(topResult, vexIndex)
+		//aovPath += string(vex.data) + " -> "
 		//将vex的各个邻接点入度减1
 		tmp := vex.arcNode
 		for tmp != nil {
+			//拓扑排序
 			this.vertices[tmp.adjvex].inNum--
 			if this.vertices[tmp.adjvex].inNum == 0 { //将新的入度为0的顶点加入队列
 				queue.pushQueue(this.vertices[tmp.adjvex])
 			}
+
+			//事件最早发生时间计算
+			if this.ve[vexIndex]+tmp.info > this.ve[tmp.adjvex] {
+				this.ve[tmp.adjvex] = this.ve[vexIndex] + tmp.info
+			}
+
 			tmp = tmp.next
 		}
 		count++
 	}
 
 	if count < this.vexnum {
-		fmt.Println("存在回路！")
+		return nil, ExistLoopErr
 	}
-	fmt.Println("拓扑排序：", strings.TrimRight(aovPath, " -> "))
+	//fmt.Println("拓扑排序：", strings.TrimRight(aovPath, " -> "))
+	return topResult, nil
+}
+
+func (this *ALGraph) CriticalPath() error {
+	topResult, err := this.AOVSort()
+	if err != nil {
+		return err
+	}
+
+	//事件最迟发生时间
+	//把topResult数组看成一个栈
+	stackTop := len(topResult) - 1
+	//弹出汇点的元素
+	inVex := topResult[stackTop]
+	stackTop--
+	//初始化vl数组为ve结束点的值
+	this.vl = make([]ArcType, this.vexnum)
+	for i := 0; i < this.vexnum; i++ {
+		this.vl[i] = this.ve[inVex]
+	}
+
+	//栈不为空时，按拓扑逆序求各个顶点的vl值
+	for stackTop != -1 {
+		inVex = topResult[stackTop]
+		stackTop--
+
+		tmp := this.vertices[inVex].arcNode
+		for tmp != nil {
+			if this.vl[inVex] > this.vl[tmp.adjvex]-tmp.info {
+				this.vl[inVex] = this.vl[tmp.adjvex] - tmp.info
+			}
+			tmp = tmp.next
+		}
+	}
+
+	//关键路径输出
+	for in := 0; in < this.vexnum; in++ {
+		vex := this.vertices[in]
+		tmp := vex.arcNode
+		for tmp != nil {
+			ee := this.ve[in]
+			el := this.vl[tmp.adjvex] - tmp.info
+			if ee == el { //关键路径
+				fmt.Printf("<%s,%s>weight:%d ", vex.data, this.vertices[tmp.adjvex].data, tmp.info)
+			}
+			tmp = tmp.next
+		}
+	}
+
+	return nil
 }

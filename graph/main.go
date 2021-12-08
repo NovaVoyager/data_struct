@@ -1,6 +1,9 @@
 package main
 
-import "github.com/miaogu-go/data_struct/graph/CriticalPathAlgorithm"
+import (
+	"fmt"
+	"github.com/miaogu-go/data_struct/graph/CriticalPathAlgorithm"
+)
 
 func main() {
 	alV()
@@ -233,4 +236,10 @@ func alV() {
 	}
 	g := CriticalPathAlgorithm.NewALGraph(vexs, elems)
 	g.AOVSort()
+	err := g.CriticalPath()
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+
 }
