@@ -4,8 +4,14 @@ import (
 	"fmt"
 )
 
+func sortTree() {
+	//NewSortBinTree([]int{63, 90, 70, 55, 58})
+	NewSortBinTree([]int{38, 12, 34, 56, 13, 6, 98, 3, 17, 40, 78})
+}
+
 func main() {
-	fmt.Println("please input tree:")
+	sortTree()
+	/*fmt.Println("please input tree:")
 	str := readIn()
 	i := 0
 	root := createTree(str, &i)
@@ -48,7 +54,7 @@ func main() {
 
 	fmt.Printf("tree depth:")
 	depth := treeDepth(root)
-	fmt.Printf("%d\n", depth)
+	fmt.Printf("%d\n", depth)*/
 }
 
 //treeDepth 获取数深度
