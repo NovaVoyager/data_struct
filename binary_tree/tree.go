@@ -6,7 +6,8 @@ import (
 
 func sortTree() {
 	//NewSortBinTree([]int{63, 90, 70, 55, 58})
-	NewSortBinTree([]int{38, 12, 34, 56, 13, 6, 98, 3, 17, 40, 78})
+	tree := NewSortBinTree([]int{38, 12, 34, 56, 13, 6, 98, 3, 17, 40, 78})
+	tree.deleteBST(tree.tree, 40)
 }
 
 func main() {
