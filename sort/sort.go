@@ -41,3 +41,36 @@ func BubbleSort(r []int) []int {
 	}
 	return r
 }
+
+//partition 快速排序中轴位置
+func partition(r []int, first, end int) int {
+	i := first
+	j := end
+	for i < j {
+		for i < j && r[i] <= r[j] {
+			j--
+		}
+		if i < j {
+			r[i], r[j] = r[j], r[i]
+			i++
+		}
+		for i < j && r[i] <= r[j] {
+			i++
+		}
+		if i < j {
+			r[i], r[j] = r[j], r[i]
+			j--
+		}
+	}
+	return i
+}
+
+//QuickSort 快排
+func QuickSort(r []int, first, end int) []int {
+	if first < end {
+		pos := partition(r, first, end)
+		QuickSort(r, first, pos-1)
+		QuickSort(r, pos+1, end)
+	}
+	return r
+}

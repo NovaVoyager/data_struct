@@ -5,7 +5,14 @@ import "fmt"
 func main() {
 	//iSort()
 	//xSort()
-	bSort()
+	//bSort()
+	qSort()
+}
+
+func qSort() {
+	r := []int{49, 38, 65, 97, 76, 13, 27}
+	r = QuickSort(r, 0, len(r)-1)
+	fmt.Println(r)
 }
 
 func bSort() {
