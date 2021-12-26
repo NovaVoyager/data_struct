@@ -4,7 +4,14 @@ import "fmt"
 
 func main() {
 	//iSort()
-	xSort()
+	//xSort()
+	bSort()
+}
+
+func bSort() {
+	r := []int{5, 69, 81, 12, 38, 53, 98}
+	r = BubbleSort(r)
+	fmt.Println(r)
 }
 
 func iSort() {

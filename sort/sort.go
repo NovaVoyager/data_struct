@@ -29,3 +29,15 @@ func XierSort(r []int) []int {
 	}
 	return r
 }
+
+//BubbleSort 冒泡排序
+func BubbleSort(r []int) []int {
+	for i := 0; i < len(r)-1; i++ {
+		for j := 0; j < i; j++ {
+			if r[j] > r[j+1] {
+				r[j], r[j+1] = r[j+1], r[j]
+			}
+		}
+	}
+	return r
+}
