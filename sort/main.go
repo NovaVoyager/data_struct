@@ -6,7 +6,14 @@ func main() {
 	//iSort()
 	//xSort()
 	//bSort()
-	qSort()
+	//qSort()
+	sSort()
+}
+
+func sSort() {
+	r := []int{21, 25, 49, 28, 16, 8}
+	r = SelectSort(r)
+	fmt.Println(r)
 }
 
 func qSort() {

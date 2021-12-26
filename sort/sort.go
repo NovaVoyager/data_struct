@@ -74,3 +74,20 @@ func QuickSort(r []int, first, end int) []int {
 	}
 	return r
 }
+
+//SelectSort 选择排序
+func SelectSort(r []int) []int {
+	for i := 0; i < len(r)-1; i++ {
+		min := i
+		for j := i + 1; j < len(r); j++ {
+			if r[j] < r[min] {
+				min = j
+			}
+		}
+		//发生过交换
+		if min != i {
+			r[i], r[min] = r[min], r[i]
+		}
+	}
+	return r
+}
