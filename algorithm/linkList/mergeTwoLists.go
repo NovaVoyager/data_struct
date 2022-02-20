@@ -1,16 +1,7 @@
 package linkList
 
+//mergeTwoLists 合并两个有序链表
 func mergeTwoLists(list1 *ListNode, list2 *ListNode) *ListNode {
-	if list1 == nil && list2 != nil {
-		return list2
-	}
-	if list2 == nil && list1 != nil {
-		return list1
-	}
-	if list1 == nil && list2 == nil {
-		return nil
-	}
-
 	var preHead *ListNode
 	pre := &ListNode{}
 	preHead = pre
